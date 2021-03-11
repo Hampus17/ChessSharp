@@ -6,7 +6,7 @@ class Knight : Piece {
 
     }
 
-    public override List<string> LegalMoves(Board board, string position) {
+    public override List<string> LegalMoves(Board board) {
         // Show moves that aren't legal with an X and the ones that are legal with a #
 
         return new List<string> { "test" };

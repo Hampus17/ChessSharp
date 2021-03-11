@@ -6,7 +6,7 @@ class Pawn : Piece {
 
     }
 
-    public override List<string> LegalMoves(Board board, string position) {
+    public override List<string> LegalMoves(Board board) {
 
         throw new System.NotImplementedException();
     }

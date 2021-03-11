@@ -2,29 +2,39 @@
 
 class Game {
 
-    private bool DEBUG_MODE;
-    private int AI_LEVEL;
+    // private Dictionary<string, Object[]> state = new Dictionary<string, object[]>();
 
-    public Game(bool d, int a) {
+    public Game() {
         /*
          * Params:
          *      p
          */
-        this.DEBUG_MODE = d;
-        this.AI_LEVEL = a;
+
+        //state.Add("player_b", ["moves" = 0, lost_pieces = 0, taken_pieces = 0]);
+        //state.Add("player_w", [moves = 0, lost_pieces = 0, taken_pieces = 0]);
+        // state.Add("players_turn", ["player_b"]);
     }
 
     public void Run() {
-
-        if (DEBUG_MODE)
-            Console.WriteLine("== Running App in Debug Mode ==\n\n");
 
         Board board = new Board();
         // Init all things that is needed to play the game
         // Check for some input
 
+        Console.WriteLine("\n");
+        Console.WriteLine("{0}", board.GetPiece(new int[] { 0, 2 }).ToString());
+
+        foreach (string t in board.GetPiece(new int[] { 0, 2 }).LegalMoves(board)) {
+            Console.WriteLine(t);
+        }
+
+        Console.ReadLine();
         // Start the game
         // If AI is done, randomize who is going first
+
+
+        // Instead of letting the player "write" the position of where it is going
+        // Have the player select a piece, then show a list of legal moves and then put a corresponding number to write to move to that move
 
     }
 

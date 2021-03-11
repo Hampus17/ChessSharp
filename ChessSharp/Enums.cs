@@ -4,8 +4,8 @@
 }
 
 public enum GameState {
-    INGAME,
-    INMENU,
+    IN_GAME,
+    IN_MENU,
     PLAYING,
-
+    PIECE_SELECTED,
 }

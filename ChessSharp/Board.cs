@@ -7,17 +7,16 @@ class Board {
 
     private Piece[,] _board;  // int col, int row
     private bool[,] _overlayedBoard;
-    private const int COL_SIZE = 8, ROW_SIZE = 8;
+    private const int ROW_SIZE = 8, COL_SIZE = 8;
 
     public Board() {
         // Init the 8x8 grid
         // Init all the pieces in the correct place
         // 
 
-        _board = new Piece[COL_SIZE, ROW_SIZE]; // Create the board
+        _board = new Piece[ROW_SIZE, COL_SIZE]; // Create the board
         InitPieces(); // Initialize and place down all the pieces on the board
         PrintBoard();
-        Console.ReadLine();
     }
 
     private void InitPieces() {
@@ -31,7 +30,7 @@ class Board {
          *      boardPos = e.g. [3, 4]
          */
 
-        string[,] boardSetup = new string[COL_SIZE, ROW_SIZE] 
+        string[,] boardSetup = new string[ROW_SIZE, COL_SIZE] 
         { 
             { "Rook",   "Knight",   "Bishop",   "King",     "Queen",    "Bishop",   "Knight",   "Rook"  }, 
             { "Pawn",   "Pawn",     "Pawn",     "Pawn",     "Pawn",     "Pawn",     "Pawn",     "Pawn"  },
@@ -43,32 +42,34 @@ class Board {
             { "Rook",   "Knight",   "Bishop",   "Queen",    "King",     "Bishop",   "Knight",   "Rook"  },
         };
 
-        Color currentColor;
-        string currentType;
+        Color color;
+        string type;
+        int[] position;
 
-        for (int i = 0; i < COL_SIZE; i++) {
-            for (int j = 0; j < ROW_SIZE; j++) {
-                currentType = boardSetup[i, j];
-                currentColor = (i < 3) ? Color.BLACK : Color.WHITE;
+        for (int i = 0; i < ROW_SIZE; i++) {
+            for (int j = 0; j < COL_SIZE; j++) {
+                type = boardSetup[i, j];
+                color = (i < 3) ? Color.BLACK : Color.WHITE;
+                position = new int[2] { i, j };
 
-                switch (currentType) {
+                switch (type) {
                     case "Rook":
-                        _board[i, j] = new Rook(currentColor, currentType, new int[2] { i, j });
+                        _board[i, j] = new Rook(color, type, position);
                         break;
                     case "Knight":
-                        _board[i, j] = new Knight(currentColor, currentType, new int[2] { i, j });
+                        _board[i, j] = new Knight(color, type, position);
                         break;
                     case "Bishop":
-                        _board[i, j] = new Bishop(currentColor, currentType, new int[2] { i, j });
+                        _board[i, j] = new Bishop(color, type, position);
                         break;
                     case "King":
-                        _board[i, j] = new King(currentColor, currentType, new int[2] { i, j });
+                        _board[i, j] = new King(color, type, position);
                         break;
                     case "Queen":
-                        _board[i, j] = new Queen(currentColor, currentType, new int[2] { i, j });
+                        _board[i, j] = new Queen(color, type, position);
                         break;
                     case "Pawn":
-                        _board[i, j] = new Pawn(currentColor, currentType, new int[2] { i, j });
+                        _board[i, j] = new Pawn(color, type, position);
                         break;
                     default:
                         _board[i, j] = null;
@@ -79,29 +80,23 @@ class Board {
     }
 
     public void PrintBoard() {
-        for (int i = 0; i < COL_SIZE; i++) {
-            Console.Write("{0} ", COL_SIZE - i);
-            for (int j = 0; j < ROW_SIZE; j++) {
+        for (int i = 0; i < ROW_SIZE; i++) {
+            Console.Write("{0} ", ROW_SIZE - i);
+            for (int j = 0; j < COL_SIZE; j++) {
                 if (_board[i, j] != null)
                     Console.Write("[#]");
                 else if (_board[i, j] == null) {
-                    Console.Write("[#]");
+                    Console.Write("[ ]");
                 }
             }
             Console.Write("\n");
         }
         Console.Write("   ");
-        for (int i = 0; i < ROW_SIZE; i++)
+        for (int i = 0; i < COL_SIZE; i++)
             Console.Write("{0}  ", Convert.ToChar(i + 65));
     }
 
-    public bool GetSquareStatus() {
-        bool isEmpty = false;
-
-        return isEmpty;
-    }
-
-    public Piece GetPiece(int[] boardPos) { return _board[boardPos[0], boardPos[1]]; }
+    public Piece GetPiece(int[] boardPos) { return _board[boardPos[0], boardPos[1]]; } // Consider taking simply int col, int row instead of Array
 
     public bool PlacePiece(Piece piece, int[] boardPos) {
         /*

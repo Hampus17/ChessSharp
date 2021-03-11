@@ -4,16 +4,27 @@ using System.Collections.Generic;
 static class Utils {
 
     public static int[] ConvertStrPosToIntPos(string strPos) {
-        int col, row;
+        /*
+        *  Params: 
+        *      string: strPos = expects a string with this format -> "H7", or "D2"
+        *  
+        *  Return:
+        *      int[]: Array = transforms letter to corresponding number, e.g. "H7" to [7, 7]
+        */
 
-        return new int[2] { 1, 2 };
+        int row = Convert.ToInt32(strPos[0]) - 65;
+        int col = Convert.ToInt32(strPos[1]);
+
+        return new int[2] { row, col };
     }
 
     public static string ConvertIntPosToStrPos(int[] intPos) {
-        string col = intPos[0].ToString();
-        string row = intPos[1].ToString();
+        char row = Convert.ToChar(intPos[0] + 65);
+        string col = (8 - intPos[1]).ToString();
 
-        return (col + row);
+        string pos = row.ToString() + col.ToString();
+
+        return pos;
     }
 
 }
