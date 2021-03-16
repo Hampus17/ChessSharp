@@ -6,7 +6,7 @@ class Queen : Piece {
 
     }
 
-    public override List<string> LegalMoves(Board board) {
+    public override List<int[]> LegalMoves(Board board) {
 
         throw new System.NotImplementedException();
     }

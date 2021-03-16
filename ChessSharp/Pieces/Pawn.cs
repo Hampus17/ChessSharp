@@ -6,7 +6,9 @@ class Pawn : Piece {
 
     }
 
-    public override List<string> LegalMoves(Board board) {
+    public override List<int[]> LegalMoves(Board board) {
+
+        bool isFirstMove = true;
 
         throw new System.NotImplementedException();
     }

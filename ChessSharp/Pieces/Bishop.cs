@@ -6,18 +6,30 @@ class Bishop : Piece {
 
     }
 
-    public override List<string> LegalMoves(Board board) {
+    public override List<int[]> LegalMoves(Board board) {
 
-        List<string> moves = new List<string>();
+        List<int[]> intMoves;
+        int row = this.pos[0] + 1, col = this.pos[1] + 1;
+        int maxMoves = 0; // 0 = unlimited
 
-        int rightDir = 2, leftDir = -2, forwardDir = -2, backwardsDir = 2;
-        int row = this.pos[0], col = this.pos[1];
+        // not bishop
+        intMoves = new List<int[]>() {
+            new int[] { row + (-1), col },  // first left
+            new int[] { row + (-2), col },  // second left
+            new int[] { row + (1), col },   // first right
+            new int[] { row + (2), col },   // second right
+            new int[] { row, col  + (-1)},  // first down?
+            new int[] { row, col + (-2)},   // second down?
+        };
 
-        moves.Add(Utils.ConvertIntPosToStrPos(new int[] { row + leftDir, col })); // Move 
-        moves.Add(Utils.ConvertIntPosToStrPos(new int[] { row + rightDir, col }));
-        moves.Add(Utils.ConvertIntPosToStrPos(new int[] { row, col + forwardDir }));
-        moves.Add(Utils.ConvertIntPosToStrPos(new int[] { row, col + backwardsDir }));
 
-        return moves;
+        intMoves = new List<int[]>() {
+            new int[] { this.pos[0] - 1, this.pos[1] + 1},      // right diagonal upwards
+            new int[] { this.pos[0] + 1, this.pos[1] + 1 },     // right diagonal downwards
+            new int[] { this.pos[0] - 1, this.pos[1] - 1 },     // left diagonal upwards
+            new int[] { this.pos[0] + 1, this.pos[1] - 1 },     // left diagonal downwards
+        };
+
+        return intMoves;
     }
 }

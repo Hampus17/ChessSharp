@@ -81,7 +81,7 @@ class Board {
 
     public void PrintBoard() {
         for (int i = 0; i < ROW_SIZE; i++) {
-            Console.Write("{0} ", ROW_SIZE - i);
+            Console.Write("{0} ", i + 1);
             for (int j = 0; j < COL_SIZE; j++) {
                 if (_board[i, j] != null)
                     Console.Write("[#]");
@@ -115,10 +115,46 @@ class Board {
     public void MovePiece(int[] srcPos, int[] dstPos) {
         /*
          * Params:
-         *      srcPos = e.g. ["A", 6]
-         *      dstPos = e.g. ["H", 4]
+         *      srcPos = e.g. [5, 6]
+         *      dstPos = e.g. [3, 4]
          */
 
+        // [3, 1] src
+        // [1, 3] dst
+
+        int maxMoves = 0;
+        bool notAtDst = true;
+        string direction = "";
+
+        int diffX = srcPos[0] - dstPos[0], diffY = srcPos[1] - dstPos[1];
+
+        // Check moving direction
+        if (diffX < 0 && diffY > 0)
+            direction = "rightDigUp";
+        else if (diffX > 0 && diffY > 0)
+            direction = "rightDigUp";
+        else if (diffX < 0 && diffY < 0)
+            direction = "leftDigUp";
+
+        // check left and right, and up and down aswell
+
+        while (maxMoves < 8 && notAtDst) {
+            switch(direction) {
+                case "rightDigUp":
+                    break;
+                default:
+                    break;
+            }
+            
+            // if not at destination
+                // move on step up
+            // if not at dest
+                // move on step left
+        }
+
+
+        // calculate how many sqaures to move
+        // 
 
     }
 

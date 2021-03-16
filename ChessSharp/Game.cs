@@ -24,9 +24,9 @@ class Game {
         Console.WriteLine("\n");
         Console.WriteLine("{0}", board.GetPiece(new int[] { 0, 2 }).ToString());
 
-        foreach (string t in board.GetPiece(new int[] { 0, 2 }).LegalMoves(board)) {
-            Console.WriteLine(t);
-        }
+        //foreach (int[] move in board.GetPiece(new int[] { 0, 2 }).LegalMoves(board)) {
+        //    Console.WriteLine("row: {0}, column: {1}", move[0], move[1]);
+        //}
 
         Console.ReadLine();
         // Start the game

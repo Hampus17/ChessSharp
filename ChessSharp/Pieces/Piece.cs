@@ -28,6 +28,6 @@ abstract class Piece {
         // Calculate if piece is on edge
     }
 
-    public abstract List<String> LegalMoves(Board board);
+    public abstract List<int[]> LegalMoves(Board board);
 
 }
