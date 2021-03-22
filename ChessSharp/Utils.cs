@@ -19,8 +19,8 @@ static class Utils {
     }
 
     public static string ConvertIntPosToStrPos(int[] intPos) {
-        char row = Convert.ToChar(intPos[0] + 65);
-        string col = (8 - intPos[1]).ToString();
+        char col = Convert.ToChar(intPos[1] + 65);
+        string row = (intPos[0] + 1).ToString();
 
         string pos = row.ToString() + col.ToString();
 

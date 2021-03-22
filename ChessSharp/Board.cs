@@ -17,6 +17,7 @@ class Board {
         _board = new Piece[ROW_SIZE, COL_SIZE]; // Create the board
         InitPieces(); // Initialize and place down all the pieces on the board
         PrintBoard();
+        OverlayBoard(_board[0, 2].LegalMoves(this));
     }
 
     private void InitPieces() {
@@ -98,20 +99,6 @@ class Board {
 
     public Piece GetPiece(int[] boardPos) { return _board[boardPos[0], boardPos[1]]; } // Consider taking simply int col, int row instead of Array
 
-    public bool PlacePiece(Piece piece, int[] boardPos) {
-        /*
-         * Params:
-         *      piece = Piece.Knight
-         *      boardPos = e.g. [3, 4]
-         * 
-         * Return:
-         *      if placement was successful (true | false)
-         */
-
-
-        return true;
-    }
-
     public void MovePiece(int[] srcPos, int[] dstPos) {
         /*
          * Params:
@@ -119,50 +106,72 @@ class Board {
          *      dstPos = e.g. [3, 4]
          */
 
-        // [3, 1] src
-        // [1, 3] dst
-
-        int maxMoves = 0;
-        bool notAtDst = true;
-        string direction = "";
-
         int diffX = srcPos[0] - dstPos[0], diffY = srcPos[1] - dstPos[1];
 
+        Piece selectedPiece = _board[srcPos[0], srcPos[1]];
+
         // Check moving direction
-        if (diffX < 0 && diffY > 0)
-            direction = "rightDigUp";
-        else if (diffX > 0 && diffY > 0)
-            direction = "rightDigUp";
-        else if (diffX < 0 && diffY < 0)
-            direction = "leftDigUp";
 
         // check left and right, and up and down aswell
 
-        while (maxMoves < 8 && notAtDst) {
-            switch(direction) {
-                case "rightDigUp":
-                    break;
-                default:
-                    break;
-            }
-            
-            // if not at destination
-                // move on step up
-            // if not at dest
-                // move on step left
-        }
+        // calculate direction based on position chosen then
+        // keep moving in the direction choosen, until destination point is hit
+
+
+
+
+        // if not at destination
+        // move on step up
+        // if not at dest
+        // move on step left
 
 
         // calculate how many sqaures to move
         // 
 
+        selectedPiece.UpdatePiece(new int[] { dstPos[0], dstPos[1] });
+
     }
 
-    public void OverlayBoard(List<Object[]> legalMoves) {
+    public void OverlayBoard(List<int[]> legalMoves) {
         /*
          * Params:
          *      legalMoves = e.g. <["D", 4], ["C", 2], ["A", 2]>
          */
+
+        bool[,] possibleMoves = new bool[ROW_SIZE, COL_SIZE];
+
+        for (int i = 0; i < legalMoves.Count; i++) {
+            foreach (var movePos in legalMoves) {
+                if (movePos[0] < ROW_SIZE && movePos[1] < COL_SIZE && movePos[0] > 0 && movePos[1] > 0)
+                    // Check if own team or other team
+                    
+                    
+                    if (_board[movePos[0], movePos[1]] == null) {
+                        possibleMoves[movePos[0], movePos[1]] = true;
+
+                    }
+            }
+            
+        }
+
+        Console.Write("\n\n");
+
+        for (int i = 0; i < ROW_SIZE; i++) {
+            for (int j = 0; j < COL_SIZE; j++) {
+                if (possibleMoves[i, j])
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                if (_board[i, j] != null) {
+                    Console.Write("[#]");
+                } else {
+                    Console.Write("[O]");
+                }
+
+                Console.ResetColor();
+            }
+            Console.Write("\n");
+        }
     }
 
     public override string ToString() {

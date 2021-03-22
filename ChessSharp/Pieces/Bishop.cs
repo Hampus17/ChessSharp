@@ -8,28 +8,27 @@ class Bishop : Piece {
 
     public override List<int[]> LegalMoves(Board board) {
 
-        List<int[]> intMoves;
+        List<int[]> moves = new List<int[]>();
         int row = this.pos[0] + 1, col = this.pos[1] + 1;
-        int maxMoves = 0; // 0 = unlimited
 
-        // not bishop
-        intMoves = new List<int[]>() {
-            new int[] { row + (-1), col },  // first left
-            new int[] { row + (-2), col },  // second left
-            new int[] { row + (1), col },   // first right
-            new int[] { row + (2), col },   // second right
-            new int[] { row, col  + (-1)},  // first down?
-            new int[] { row, col + (-2)},   // second down?
-        };
+        int movesPerDir = 8;
 
+        for (int i = 0; i < movesPerDir; i++) {
+            moves.Add(new int[] { this.pos[0] - i, this.pos[1] + i }); // right diagonal upwards
+        }
 
-        intMoves = new List<int[]>() {
-            new int[] { this.pos[0] - 1, this.pos[1] + 1},      // right diagonal upwards
-            new int[] { this.pos[0] + 1, this.pos[1] + 1 },     // right diagonal downwards
-            new int[] { this.pos[0] - 1, this.pos[1] - 1 },     // left diagonal upwards
-            new int[] { this.pos[0] + 1, this.pos[1] - 1 },     // left diagonal downwards
-        };
+        for (int i = 0; i < movesPerDir; i++) {
+            moves.Add(new int[] { this.pos[0] + i, this.pos[1] + i }); // right diagonal downwards
+        }
 
-        return intMoves;
+        for (int i = 0; i < movesPerDir; i++) {
+            moves.Add(new int[] { this.pos[0] - i, this.pos[1] - i }); // left diagonal upwards
+        }
+
+        for (int i = 0; i < movesPerDir; i++) {
+            moves.Add(new int[] { this.pos[0] + i, this.pos[1] - i }); // left diagonal downwards
+        }
+
+        return moves;
     }
 }
