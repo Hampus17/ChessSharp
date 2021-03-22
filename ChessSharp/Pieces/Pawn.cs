@@ -6,7 +6,7 @@ class Pawn : Piece {
 
     }
 
-    public override List<int[]> LegalMoves(Board board) {
+    public override List<int[]> LegalMoves() {
 
         bool isFirstMove = true;
 

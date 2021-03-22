@@ -6,7 +6,7 @@ class Bishop : Piece {
 
     }
 
-    public override List<int[]> LegalMoves(Board board) {
+    public override List<int[]> LegalMoves() {
 
         List<int[]> moves = new List<int[]>();
         int row = this.pos[0] + 1, col = this.pos[1] + 1;

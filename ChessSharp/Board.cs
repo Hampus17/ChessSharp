@@ -17,7 +17,7 @@ class Board {
         _board = new Piece[ROW_SIZE, COL_SIZE]; // Create the board
         InitPieces(); // Initialize and place down all the pieces on the board
         PrintBoard();
-        OverlayBoard(_board[0, 2].LegalMoves(this));
+        OverlayBoard(_board[0, 2]);
     }
 
     private void InitPieces() {
@@ -99,6 +99,10 @@ class Board {
 
     public Piece GetPiece(int[] boardPos) { return _board[boardPos[0], boardPos[1]]; } // Consider taking simply int col, int row instead of Array
 
+    public void SelectPiece(int[] boardPos ) {
+
+    }
+
     public void MovePiece(int[] srcPos, int[] dstPos) {
         /*
          * Params:
@@ -133,45 +137,54 @@ class Board {
 
     }
 
-    public void OverlayBoard(List<int[]> legalMoves) {
+    public void OverlayBoard(Piece selectedPiece) {
         /*
          * Params:
          *      legalMoves = e.g. <["D", 4], ["C", 2], ["A", 2]>
          */
 
-        bool[,] possibleMoves = new bool[ROW_SIZE, COL_SIZE];
+        Console.Clear();
 
-        for (int i = 0; i < legalMoves.Count; i++) {
-            foreach (var movePos in legalMoves) {
-                if (movePos[0] < ROW_SIZE && movePos[1] < COL_SIZE && movePos[0] > 0 && movePos[1] > 0)
-                    // Check if own team or other team
-                    
-                    
-                    if (_board[movePos[0], movePos[1]] == null) {
-                        possibleMoves[movePos[0], movePos[1]] = true;
+        string[,] possibleMoves = new string[ROW_SIZE, COL_SIZE];
 
-                    }
+        for (int i = 0; i < selectedPiece.LegalMoves().Count; i++) {
+            foreach (var movePos in selectedPiece.LegalMoves()) {
+                if (movePos[0] < ROW_SIZE && movePos[1] < COL_SIZE && movePos[0] >= 0 && movePos[1] >= 0)
+                    if (movePos[0] != selectedPiece.pos[0] && movePos[1] != selectedPiece.pos[1])
+                        if (_board[movePos[0], movePos[1]] == null) // or is enemy team
+                            possibleMoves[movePos[0], movePos[1]] = "true";
+                        else 
+                            possibleMoves[movePos[0], movePos[1]] = "false";
+                    else
+                        possibleMoves[movePos[0], movePos[1]] = "current";
             }
-            
         }
 
         Console.Write("\n\n");
 
         for (int i = 0; i < ROW_SIZE; i++) {
+            Console.Write("{0} ", i + 1);
             for (int j = 0; j < COL_SIZE; j++) {
-                if (possibleMoves[i, j])
-                    Console.ForegroundColor = ConsoleColor.Green;
+                if (possibleMoves[i, j] != null)
+                    if (possibleMoves[i, j] == "current")
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                    else if (possibleMoves[i, j] == "true")
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    else if (possibleMoves[i, j] == "false")
+                        Console.ForegroundColor = ConsoleColor.Red;
 
-                if (_board[i, j] != null) {
+                if (_board[i, j] != null)
                     Console.Write("[#]");
-                } else {
+                else
                     Console.Write("[O]");
-                }
 
                 Console.ResetColor();
             }
             Console.Write("\n");
         }
+        Console.Write("   ");
+        for (int i = 0; i < COL_SIZE; i++)
+            Console.Write("{0}  ", Convert.ToChar(i + 65));
     }
 
     public override string ToString() {

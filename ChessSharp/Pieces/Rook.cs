@@ -6,7 +6,7 @@ class Rook : Piece {
 
     }
 
-    public override List<int[]> LegalMoves(Board board) {
+    public override List<int[]> LegalMoves() {
 
         throw new System.NotImplementedException();
     }

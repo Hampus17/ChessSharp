@@ -25,6 +25,6 @@ abstract class Piece {
 
     }
 
-    public abstract List<int[]> LegalMoves(Board board);
+    public abstract List<int[]> LegalMoves();
 
 }

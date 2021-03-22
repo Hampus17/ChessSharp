@@ -6,7 +6,7 @@ class Knight : Piece {
 
     }
 
-    public override List<int[]> LegalMoves(Board board) {
+    public override List<int[]> LegalMoves() {
         // Show moves that aren't legal with an X and the ones that are legal with a #
 
         throw new System.NotImplementedException();
