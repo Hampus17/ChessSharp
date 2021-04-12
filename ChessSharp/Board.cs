@@ -15,9 +15,7 @@ class Board {
         // 
 
         _board = new Piece[ROW_SIZE, COL_SIZE]; // Create the board
-        InitPieces(); // Initialize and place down all the pieces on the board
-        PrintBoard();
-        OverlayBoard(_board[0, 2]);
+        InitPieces(); // Initialize and place down all the pieces on the 
     }
 
     private void InitPieces() {
@@ -99,8 +97,28 @@ class Board {
 
     public Piece GetPiece(int[] boardPos) { return _board[boardPos[0], boardPos[1]]; } // Consider taking simply int col, int row instead of Array
 
-    public void SelectPiece(int[] boardPos ) {
+    public void SelectPiece(int[] boardPos) {
 
+        int optionCount = 0, chosenOption = -1;
+
+        Piece selectedPiece = GetPiece(boardPos);
+        string[,] possibleMoves = selectedPiece.PossibleMoves(ROW_SIZE, COL_SIZE, _board);
+
+        // Print the overlay of possible moves, and moves not possible
+        OverlayBoard(selectedPiece);
+
+        // Print possible moves
+        Console.Write("\n\nPossible Moves:\n");
+        for (int i = 0; i < ROW_SIZE; i++)
+            for (int j = 0; j < COL_SIZE; j++)
+                if (possibleMoves[i, j] != null)
+                    if (possibleMoves[i, j] == "true")
+                        Console.WriteLine("[{0}] {1}{2}", optionCount += 1, Convert.ToChar(j + 65), i + 1);
+
+        while (chosenOption != -1) {
+
+        }
+        
     }
 
     public void MovePiece(int[] srcPos, int[] dstPos) {
@@ -113,6 +131,7 @@ class Board {
         int diffX = srcPos[0] - dstPos[0], diffY = srcPos[1] - dstPos[1];
 
         Piece selectedPiece = _board[srcPos[0], srcPos[1]];
+        string[,] possibleMoves = selectedPiece.PossibleMoves(ROW_SIZE, COL_SIZE, _board);
 
         // Check moving direction
 
@@ -145,20 +164,7 @@ class Board {
 
         Console.Clear();
 
-        string[,] possibleMoves = new string[ROW_SIZE, COL_SIZE];
-
-        for (int i = 0; i < selectedPiece.LegalMoves().Count; i++) {
-            foreach (var movePos in selectedPiece.LegalMoves()) {
-                if (movePos[0] < ROW_SIZE && movePos[1] < COL_SIZE && movePos[0] >= 0 && movePos[1] >= 0)
-                    if (movePos[0] != selectedPiece.pos[0] && movePos[1] != selectedPiece.pos[1])
-                        if (_board[movePos[0], movePos[1]] == null) // or is enemy team
-                            possibleMoves[movePos[0], movePos[1]] = "true";
-                        else 
-                            possibleMoves[movePos[0], movePos[1]] = "false";
-                    else
-                        possibleMoves[movePos[0], movePos[1]] = "current";
-            }
-        }
+        string[,] possibleMoves = selectedPiece.PossibleMoves(ROW_SIZE, COL_SIZE, _board);
 
         Console.Write("\n\n");
 

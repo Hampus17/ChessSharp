@@ -21,12 +21,13 @@ class Game {
         // Init all things that is needed to play the game
         // Check for some input
 
-        Console.WriteLine("\n");
-        Console.WriteLine("{0}", board.GetPiece(new int[] { 0, 2 }).ToString());
-
         //foreach (int[] move in board.GetPiece(new int[] { 0, 2 }).LegalMoves(board)) {
         //    Console.WriteLine("row: {0}, column: {1}", move[0], move[1]);
         //}
+
+        board.PrintBoard();
+        Console.ReadLine();
+        board.SelectPiece(new int[] { 0, 2 });
 
         Console.ReadLine();
         // Start the game
