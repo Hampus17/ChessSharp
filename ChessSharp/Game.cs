@@ -28,6 +28,8 @@ class Game {
         board.PrintBoard();
         Console.ReadLine();
         board.SelectPiece(new int[] { 0, 2 });
+        Console.ReadLine();
+        board.PrintBoard();
 
         Console.ReadLine();
         // Start the game

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 abstract class Piece {
     private Color _color;
     public string pieceType { get; }
-    public int[] pos { get; }
+    public int[] pos { get; set; }
     public Piece(Color color, string type, int[] initialPos) {
         /*
          * Params:
@@ -21,7 +21,7 @@ abstract class Piece {
     }
 
     public void UpdatePiece(int[] newPos) {
-
+        this.pos = newPos;
 
     }
 

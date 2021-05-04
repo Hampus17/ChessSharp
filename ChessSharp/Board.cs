@@ -8,7 +8,7 @@ class Board {
     private Piece[,] _board;  // int col, int row
     private bool[,] _overlayedBoard;
     private const int ROW_SIZE = 8, COL_SIZE = 8;
-
+    
     public Board() {
         // Init the 8x8 grid
         // Init all the pieces in the correct place
@@ -99,7 +99,7 @@ class Board {
 
     public void SelectPiece(int[] boardPos) {
 
-        int optionCount = 0, chosenOption = -1;
+        int optionsCount = 0, chosenOption = -1;
 
         Piece selectedPiece = GetPiece(boardPos);
         string[,] possibleMoves = selectedPiece.PossibleMoves(ROW_SIZE, COL_SIZE, _board);
@@ -107,18 +107,30 @@ class Board {
         // Print the overlay of possible moves, and moves not possible
         OverlayBoard(selectedPiece);
 
+        List<int[]> movesPositions = new List<int[]>();
+
         // Print possible moves
         Console.Write("\n\nPossible Moves:\n");
         for (int i = 0; i < ROW_SIZE; i++)
             for (int j = 0; j < COL_SIZE; j++)
                 if (possibleMoves[i, j] != null)
-                    if (possibleMoves[i, j] == "true")
-                        Console.WriteLine("[{0}] {1}{2}", optionCount += 1, Convert.ToChar(j + 65), i + 1);
+                    if (possibleMoves[i, j] == "true") {
+                        int[] pos = new int[2] { i, j };
+                        movesPositions.Add(pos);
+                        Console.WriteLine("[{0}] {1}{2}", optionsCount += 1, Convert.ToChar(j + 65), i + 1);
+                    }
+        Console.WriteLine("[0] Cancel selection");
 
-        while (chosenOption != -1) {
+        Console.WriteLine(movesPositions.Count);
 
+        do {
+            chosenOption = int.Parse(Console.ReadLine());
+
+            MovePiece(selectedPiece.pos, movesPositions[chosenOption - 1]);
+            OverlayBoard(GetPiece(movesPositions[chosenOption - 1]));
         }
-        
+        while (chosenOption < 0 && chosenOption > optionsCount);
+
     }
 
     public void MovePiece(int[] srcPos, int[] dstPos) {
@@ -128,10 +140,8 @@ class Board {
          *      dstPos = e.g. [3, 4]
          */
 
-        int diffX = srcPos[0] - dstPos[0], diffY = srcPos[1] - dstPos[1];
-
-        Piece selectedPiece = _board[srcPos[0], srcPos[1]];
-        string[,] possibleMoves = selectedPiece.PossibleMoves(ROW_SIZE, COL_SIZE, _board);
+        var tempDstPos = _board[dstPos[0], dstPos[1]];
+        Piece selectedPiece = GetPiece(srcPos);
 
         // Check moving direction
 
@@ -140,8 +150,8 @@ class Board {
         // calculate direction based on position chosen then
         // keep moving in the direction choosen, until destination point is hit
 
-
-
+        _board[dstPos[0], dstPos[1]] = selectedPiece;
+        _board[srcPos[0], srcPos[1]] = tempDstPos;
 
         // if not at destination
         // move on step up
