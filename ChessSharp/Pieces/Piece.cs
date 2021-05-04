@@ -20,27 +20,40 @@ abstract class Piece {
         return String.Format("Piece: {0} << [{1}] - [{2}] >>", this.pieceType, this._color, Utils.ConvertIntPosToStrPos(this.pos));
     }
 
-    public void UpdatePiece(int[] newPos) {
-        this.pos = newPos;
+    public void UpdatePiecePos(int[] newPos) { this.pos = newPos; }
 
-    }
-
+    // Create these legal moves in each class
     public abstract List<int[]> LegalMoves();
 
     public string[,] PossibleMoves(int rowSize, int colSize, Piece[,] board) {
         string[,] possibleMoves = new string[rowSize, colSize];
 
-        for (int i = 0; i < this.LegalMoves().Count; i++) {
-            foreach (var movePos in this.LegalMoves()) {
-                if (movePos[0] < rowSize && movePos[1] < colSize && movePos[0] >= 0 && movePos[1] >= 0)
-                    if (movePos[0] != this.pos[0] && movePos[1] != this.pos[1])
-                        if (board[movePos[0], movePos[1]] == null || board[movePos[0], movePos[1]]._color != this._color) // or is enemy team
-                            possibleMoves[movePos[0], movePos[1]] = "true";
-                        else
-                            possibleMoves[movePos[0], movePos[1]] = "false";
+        // Loop through the return LegalMoves() array which contains int[2] positions
+        //for (int i = 0; i < this.LegalMoves().Count; i++) {
+
+        //}
+        int i = 0;
+
+        // For every possible legal position e.g. [0, 3]
+        foreach (var legalMovePos in this.LegalMoves()) {
+
+            // Check if position exceeds chess grid 
+            if (legalMovePos[0] < rowSize && legalMovePos[1] < colSize && legalMovePos[0] >= 0 && legalMovePos[1] >= 0)
+
+                // Check if the possible move is not the same as the piece's current position
+                if (legalMovePos[0] == this.pos[0] && legalMovePos[1] == this.pos[1]) {
+                    possibleMoves[legalMovePos[0], legalMovePos[1]] = "current";
+                    Console.WriteLine("awd");
+                }
+                else {
+                    // Move is legal if the position on board is empty or position has other color on it
+                    if (board[legalMovePos[0], legalMovePos[1]] == null || board[legalMovePos[0], legalMovePos[1]]._color != this._color)
+                        possibleMoves[legalMovePos[0], legalMovePos[1]] = "true";
                     else
-                        possibleMoves[movePos[0], movePos[1]] = "current";
-            }
+                        possibleMoves[legalMovePos[0], legalMovePos[1]] = "false";
+                }
+
+            i++;
         }
 
         return possibleMoves;

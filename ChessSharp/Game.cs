@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 class Game {
 
@@ -10,9 +11,17 @@ class Game {
          *      p
          */
 
-        //state.Add("player_b", ["moves" = 0, lost_pieces = 0, taken_pieces = 0]);
-        //state.Add("player_w", [moves = 0, lost_pieces = 0, taken_pieces = 0]);
-        // state.Add("players_turn", ["player_b"]);
+        var player_b = new Dictionary<string, int>() {
+            { "moves",          0 },
+            { "lost_pieces",    0 },
+            { "taken_pieces",   0 }
+        };
+        
+        var player_w = new Dictionary<string, int>() {
+            { "moves",          0 },
+            { "lost_pieces",    0 },
+            { "taken_pieces",   0 }
+        };
     }
 
     public void Run() {
@@ -27,9 +36,12 @@ class Game {
 
         board.PrintBoard();
         Console.ReadLine();
-        board.SelectPiece(new int[] { 0, 2 });
+        board.SelectAndMovePiece(new int[] { 0, 2 });
         Console.ReadLine();
         board.PrintBoard();
+        board.SelectAndMovePiece(new int[] { 0, 3 });
+        Console.ReadLine();
+
 
         Console.ReadLine();
         // Start the game

@@ -97,40 +97,49 @@ class Board {
 
     public Piece GetPiece(int[] boardPos) { return _board[boardPos[0], boardPos[1]]; } // Consider taking simply int col, int row instead of Array
 
-    public void SelectPiece(int[] boardPos) {
+    public void SelectAndMovePiece(int[] boardPos) {
 
-        int optionsCount = 0, chosenOption = -1;
+        int optionsCount, chosenOption;
 
         Piece selectedPiece = GetPiece(boardPos);
         string[,] possibleMoves = selectedPiece.PossibleMoves(ROW_SIZE, COL_SIZE, _board);
 
-        // Print the overlay of possible moves, and moves not possible
-        OverlayBoard(selectedPiece);
-
-        List<int[]> movesPositions = new List<int[]>();
-
-        // Print possible moves
-        Console.Write("\n\nPossible Moves:\n");
-        for (int i = 0; i < ROW_SIZE; i++)
-            for (int j = 0; j < COL_SIZE; j++)
-                if (possibleMoves[i, j] != null)
-                    if (possibleMoves[i, j] == "true") {
-                        int[] pos = new int[2] { i, j };
-                        movesPositions.Add(pos);
-                        Console.WriteLine("[{0}] {1}{2}", optionsCount += 1, Convert.ToChar(j + 65), i + 1);
-                    }
-        Console.WriteLine("[0] Cancel selection");
-
-        Console.WriteLine(movesPositions.Count);
-
         do {
-            chosenOption = int.Parse(Console.ReadLine());
+            optionsCount = 0;
+            chosenOption = -1;
 
-            MovePiece(selectedPiece.pos, movesPositions[chosenOption - 1]);
-            OverlayBoard(GetPiece(movesPositions[chosenOption - 1]));
+            // Print the overlay of possible moves, and moves not possible
+            OverlayBoard(selectedPiece);
+
+            List<int[]> movesPositions = new List<int[]>();
+
+            // Print possible moves
+            Console.Write("\n\nPossible Moves:\n");
+            for (int i = 0; i < ROW_SIZE; i++)
+                for (int j = 0; j < COL_SIZE; j++)
+                    if (possibleMoves[i, j] != null)
+                        if (possibleMoves[i, j] == "true") {
+                            int[] pos = new int[2] { i, j };
+                            movesPositions.Add(pos);
+                            Console.WriteLine("[{0}] {1}{2}", optionsCount += 1, Convert.ToChar(j + 65), i + 1);
+                        }
+            Console.WriteLine("[0] Cancel selection");
+
+            Console.WriteLine(Utils.ConvertIntPosToStrPos(selectedPiece.pos));
+
+            // Get option input from user and move piece
+            try {
+                chosenOption = int.Parse(Console.ReadLine());
+
+                MovePiece(selectedPiece.pos, movesPositions[chosenOption - 1]);
+                OverlayBoard(GetPiece(movesPositions[chosenOption - 1]));
+            }
+            catch (Exception e) {
+                Console.WriteLine("[ERROR] Invalid input - enter a number between 0 and {0}", optionsCount);
+                Utils.Wait(3);
+            }
         }
-        while (chosenOption < 0 && chosenOption > optionsCount);
-
+        while (chosenOption < 0 || chosenOption > optionsCount);
     }
 
     public void MovePiece(int[] srcPos, int[] dstPos) {
@@ -143,33 +152,16 @@ class Board {
         var tempDstPos = _board[dstPos[0], dstPos[1]];
         Piece selectedPiece = GetPiece(srcPos);
 
-        // Check moving direction
-
-        // check left and right, and up and down aswell
-
-        // calculate direction based on position chosen then
-        // keep moving in the direction choosen, until destination point is hit
-
         _board[dstPos[0], dstPos[1]] = selectedPiece;
         _board[srcPos[0], srcPos[1]] = tempDstPos;
 
-        // if not at destination
-        // move on step up
-        // if not at dest
-        // move on step left
-
-
-        // calculate how many sqaures to move
-        // 
-
-        selectedPiece.UpdatePiece(new int[] { dstPos[0], dstPos[1] });
-
+        selectedPiece.UpdatePiecePos(new int[] { dstPos[0], dstPos[1] });
     }
 
     public void OverlayBoard(Piece selectedPiece) {
         /*
          * Params:
-         *      legalMoves = e.g. <["D", 4], ["C", 2], ["A", 2]>
+         *      legalMoves = e.g. 
          */
 
         Console.Clear();
@@ -183,7 +175,7 @@ class Board {
             for (int j = 0; j < COL_SIZE; j++) {
                 if (possibleMoves[i, j] != null)
                     if (possibleMoves[i, j] == "current")
-                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
                     else if (possibleMoves[i, j] == "true")
                         Console.ForegroundColor = ConsoleColor.Green;
                     else if (possibleMoves[i, j] == "false")

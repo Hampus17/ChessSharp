@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Timers;
 
 static class Utils {
 
@@ -25,6 +26,17 @@ static class Utils {
         string pos = row.ToString() + col.ToString();
 
         return pos;
+    }
+
+    public static void Wait(int seconds) {
+        bool timerElapsed = false;
+
+        Timer waitTimer = new Timer();
+        waitTimer.Elapsed += new ElapsedEventHandler((waitTimer, e) => { timerElapsed = true; });
+        waitTimer.Interval = seconds * 1000;
+        waitTimer.Enabled = true;
+
+        while (!timerElapsed) { }
     }
 
 }
