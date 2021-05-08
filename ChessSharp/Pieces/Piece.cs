@@ -3,7 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 
 abstract class Piece {
-    private Color _color;
+    public Color color { get; set; }
     public string pieceType { get; }
     public int[] pos { get; set; }
     public Piece(Color color, string type, int[] initialPos) {
@@ -11,13 +11,13 @@ abstract class Piece {
          * Params:
          *      p
          */
-        this._color = color;
+        this.color = color;
         this.pieceType = type;
         this.pos = initialPos;
     }
 
     public override string ToString() {
-        return String.Format("Piece: {0} << [{1}] - [{2}] >>", this.pieceType, this._color, Utils.ConvertIntPosToStrPos(this.pos));
+        return String.Format("Piece: {0} << [{1}] - [{2}] >>", this.pieceType, this.color, Utils.ConvertIntPosToStrPos(this.pos));
     }
 
     public void UpdatePiecePos(int[] newPos) { this.pos = newPos; }
@@ -47,7 +47,7 @@ abstract class Piece {
                 }
                 else {
                     // Move is legal if the position on board is empty or position has other color on it
-                    if (board[legalMovePos[0], legalMovePos[1]] == null || board[legalMovePos[0], legalMovePos[1]]._color != this._color)
+                    if (board[legalMovePos[0], legalMovePos[1]] == null || board[legalMovePos[0], legalMovePos[1]].color != this.color)
                         possibleMoves[legalMovePos[0], legalMovePos[1]] = "true";
                     else
                         possibleMoves[legalMovePos[0], legalMovePos[1]] = "false";

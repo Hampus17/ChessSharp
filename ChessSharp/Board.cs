@@ -2,6 +2,18 @@
 using System.Collections.Generic;
 
 class Board {
+    /*
+     *  All logic to control the board goes here
+     *  
+     *  Methods:
+     *      (void) InitPieces
+     *      (void) PrintBoard
+     *      (Piece) GetPiece
+     *      (void) SelectAndMovePiece
+     *      (void) MovePiece
+     *      (void) OverlayBoard
+     */
+
 
     //Describes the board that the chesspieces will be played on.This will bean 8x8 grid. Since the positions on a chessboard are represented using a letterfollowed by a number, our array needs to represent the directions accordingly.We willmake the following association: a=0, b=1, c=2, d=3, e=4, f=5, g=6, and h = 7.In theinitial position, the white king at e1 is at index[0][4]. The black queen at d8 is atindex[7][3].Describes the board that the chesspieces will be played on.This will bean 8x8 grid. Since the positions on a chessboard are represented using a letterfollowed by a number, our array needs to represent the directions accordingly.We willmake the following association: a=0, b=1, c=2, d=3, e=4, f=5, g=6, and h = 7.In theinitial position, the white king at e1 is at index[0][4]. The black queen at d8 is atindex[7][3].
 
@@ -22,11 +34,8 @@ class Board {
         /*
          * Usage: 
          *      this function simply goes through the boardSetup and 
-         *      places (inserts) the corresponding piece in the real board
-         * 
-         * Params:
-         *      piece = Piece.Knight
-         *      boardPos = e.g. [3, 4]
+         *      places (inserts) the corresponding piece into the real board
+         *      
          */
 
         string[,] boardSetup = new string[ROW_SIZE, COL_SIZE] 
@@ -78,30 +87,13 @@ class Board {
         }
     }
 
-    public void PrintBoard() {
-        for (int i = 0; i < ROW_SIZE; i++) {
-            Console.Write("{0} ", i + 1);
-            for (int j = 0; j < COL_SIZE; j++) {
-                if (_board[i, j] != null)
-                    Console.Write("[#]");
-                else if (_board[i, j] == null) {
-                    Console.Write("[ ]");
-                }
-            }
-            Console.Write("\n");
-        }
-        Console.Write("   ");
-        for (int i = 0; i < COL_SIZE; i++)
-            Console.Write("{0}  ", Convert.ToChar(i + 65));
-    }
 
     public Piece GetPiece(int[] boardPos) { return _board[boardPos[0], boardPos[1]]; } // Consider taking simply int col, int row instead of Array
 
-    public void SelectAndMovePiece(int[] boardPos) {
+    public void MoveSelectedPiece(Piece selectedPiece) {
 
         int optionsCount, chosenOption;
 
-        Piece selectedPiece = GetPiece(boardPos);
         string[,] possibleMoves = selectedPiece.PossibleMoves(ROW_SIZE, COL_SIZE, _board);
 
         do {
@@ -132,7 +124,6 @@ class Board {
                 chosenOption = int.Parse(Console.ReadLine());
 
                 MovePiece(selectedPiece.pos, movesPositions[chosenOption - 1]);
-                OverlayBoard(GetPiece(movesPositions[chosenOption - 1]));
             }
             catch (Exception e) {
                 Console.WriteLine("[ERROR] Invalid input - enter a number between 0 and {0}", optionsCount);
@@ -145,8 +136,8 @@ class Board {
     public void MovePiece(int[] srcPos, int[] dstPos) {
         /*
          * Params:
-         *      srcPos = e.g. [5, 6]
-         *      dstPos = e.g. [3, 4]
+         *      int[]:srcPos = e.g. [5, 6]
+         *      int[]:dstPos = e.g. [3, 4]
          */
 
         var tempDstPos = _board[dstPos[0], dstPos[1]];
@@ -155,16 +146,27 @@ class Board {
         _board[dstPos[0], dstPos[1]] = selectedPiece;
         _board[srcPos[0], srcPos[1]] = tempDstPos;
 
+        Console.WriteLine("[INFO] Moving {0}: {1} to {2}", 
+            selectedPiece.color.ToString().ToLowerInvariant(), 
+            Utils.ConvertIntPosToStrPos(selectedPiece.pos),
+            Utils.ConvertIntPosToStrPos(dstPos)
+            );
+
+        Utils.Wait(4);
+
+        // If enemy is on temp spot make it null again (remove it)
+
         selectedPiece.UpdatePiecePos(new int[] { dstPos[0], dstPos[1] });
     }
 
     public void OverlayBoard(Piece selectedPiece) {
         /*
          * Params:
-         *      legalMoves = e.g. 
+         *      Piece:selectedPiece = the piece which to overlay legal moves of
          */
 
         Console.Clear();
+        Console.ResetColor();
 
         string[,] possibleMoves = selectedPiece.PossibleMoves(ROW_SIZE, COL_SIZE, _board);
 
@@ -178,18 +180,114 @@ class Board {
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
                     else if (possibleMoves[i, j] == "true")
                         Console.ForegroundColor = ConsoleColor.Green;
-                    else if (possibleMoves[i, j] == "false")
-                        Console.ForegroundColor = ConsoleColor.Red;
 
                 if (_board[i, j] != null)
-                    Console.Write("[#]");
+                    if (_board[i, j].color == Color.WHITE)
+                        Console.Write("[#]");
+                    else
+                        Console.Write("[X]");
                 else
-                    Console.Write("[O]");
+                    Console.Write("[ ]");
 
                 Console.ResetColor();
             }
             Console.Write("\n");
         }
+        Console.Write("   ");
+        for (int i = 0; i < COL_SIZE; i++)
+            Console.Write("{0}  ", Convert.ToChar(i + 65));
+    }
+
+    public Piece SelectPiece(Color color) {
+
+        int optionsCount, chosenOption;
+
+        Console.WriteLine("\n");
+
+        do {
+            optionsCount = 0;
+            chosenOption = -1;
+
+            List<int[]> movesPositions = new List<int[]>();
+
+            Console.WriteLine("[INFO] Possible moves are listed below: ");
+            Console.WriteLine("-------------------------------------------------");
+
+            // Print possible moves
+            for (int i = 0; i < ROW_SIZE; i++) {
+                bool rowEmpty = false;
+
+                for (int j = 0; j < COL_SIZE; j++)
+                    if (_board[i, j] != null) {
+                        if (_board[i, j].color == color) {
+                            int[] pos = new int[2] { i, j };
+                            Console.Write("[{0}] {1}{2}".PadRight(15), optionsCount += 1, Convert.ToChar(pos[1] + 65), pos[0] + 1);
+                            if (optionsCount < 10)
+                                Console.Write(" ");
+                            movesPositions.Add(pos);
+                        }
+                    }
+                    else
+                        rowEmpty = true;
+
+                if (!rowEmpty)
+                    Console.WriteLine("");
+            }
+
+            Console.WriteLine("[0] Cancel selection");
+
+            // Get option input from user and move piece
+            try {
+                chosenOption = int.Parse(Console.ReadLine());
+
+                return GetPiece(movesPositions[chosenOption - 1]);
+            }
+            catch (Exception e) {
+                Console.WriteLine("[ERROR] Invalid input - enter a number between 0 and {0}", optionsCount);
+                Utils.Wait(3);
+            }
+        }
+        while (chosenOption < 0 || chosenOption > optionsCount);
+
+        return GetPiece(new int[2] { 0, 0 });
+    }
+
+    public void PrintBoard(Color color) {
+        /*
+         *  Usage: Prints the board and highlights the pieces that belong to the color with it's current turn
+         * 
+         *  Params:
+         *      Color:color = the color that should be highlighted
+         * 
+         */
+
+
+
+        for (int i = 0; i < ROW_SIZE; i++) {
+            Console.ResetColor();
+            Console.Write("{0} ", i + 1);
+
+            for (int j = 0; j < COL_SIZE; j++) {
+                Console.ResetColor();
+                if (_board[i, j] != null) {
+                    if (_board[i, j].color == color) {
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    }
+
+                    if (_board[i, j].color == Color.WHITE)
+                        Console.Write("[#]");
+                    else
+                        Console.Write("[X]");
+                }
+                else
+                    Console.Write("[ ]");
+            }
+
+            Console.ResetColor();
+
+            Console.Write("\n");
+        }
+
         Console.Write("   ");
         for (int i = 0; i < COL_SIZE; i++)
             Console.Write("{0}  ", Convert.ToChar(i + 65));
