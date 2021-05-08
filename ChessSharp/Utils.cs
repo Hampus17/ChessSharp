@@ -39,4 +39,21 @@ static class Utils {
         while (!timerElapsed) { }
     }
 
+    public static bool GetInput(string checkType, string input) {
+
+        if (checkType == "int") {
+            try { int temp = int.Parse(input); }
+            catch { return false; }
+
+            return true;
+        } else if (checkType == "string") {
+            try { int temp = int.Parse(input); }
+            catch { return false; }
+
+            return true;
+        } else {
+            Console.WriteLine("[ERROR] Invalid checktype - use string or int");
+            return false;
+        }
+    }
 }

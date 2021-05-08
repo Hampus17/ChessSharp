@@ -3,7 +3,11 @@ using System.Collections.Generic;
 
 class Game {
 
-    // private Dictionary<string, Object[]> state = new Dictionary<string, object[]>();
+    private Dictionary<string, Object[]> _state = new Dictionary<string, object[]>();
+
+    private GameStatus _status = GameStatus.IN_MENU;
+
+    private Player _player1, _player2;
 
     public Game() {
         /*
@@ -11,46 +15,61 @@ class Game {
          *      p
          */
 
-        var player_b = new Dictionary<string, int>() {
-            { "moves",          0 },
-            { "lost_pieces",    0 },
-            { "taken_pieces",   0 }
-        };
-        
-        var player_w = new Dictionary<string, int>() {
-            { "moves",          0 },
-            { "lost_pieces",    0 },
-            { "taken_pieces",   0 }
-        };
+        int randNum = new Random().Next(0, 100);
+
+        _player1 = new Player((randNum % 2 == 0) ? Color.BLACK : Color.WHITE);
+        _player2 = new Player((randNum % 2 == 0) ? Color.WHITE : Color.BLACK);
     }
 
     public void Run() {
-
+        
         Board board = new Board();
-        // Init all things that is needed to play the game
-        // Check for some input
+        Color currentTurnColor = (new Random().Next(0, 100) % 2 == 0) ? Color.WHITE : Color.BLACK;
 
-        //foreach (int[] move in board.GetPiece(new int[] { 0, 2 }).LegalMoves(board)) {
-        //    Console.WriteLine("row: {0}, column: {1}", move[0], move[1]);
-        //}
+        _status = GameStatus.IN_GAME;
 
-        board.PrintBoard();
-        Console.ReadLine();
-        board.SelectAndMovePiece(new int[] { 0, 2 });
-        Console.ReadLine();
-        board.PrintBoard();
-        board.SelectAndMovePiece(new int[] { 0, 3 });
-        Console.ReadLine();
+        if (_status == GameStatus.IN_MENU) {
+            // Reset the board
+            board = new Board();
 
+            // PrintMenu();
+            // ChooseOptions();
+        }
 
-        Console.ReadLine();
-        // Start the game
-        // If AI is done, randomize who is going first
+        while (_status == GameStatus.IN_GAME) {
 
+            Player playerRef;
 
-        // Instead of letting the player "write" the position of where it is going
-        // Have the player select a piece, then show a list of legal moves and then put a corresponding number to write to move to that move
+            if (_player1.color == currentTurnColor)
+                playerRef = _player1;
+            else
+                playerRef = _player2;
 
+            Console.Clear();
+
+            Console.WriteLine("[Player] {0}", (currentTurnColor == Color.BLACK) ? "Black (X)" : "White (#)");
+            Console.WriteLine("");
+
+            board.PrintBoard(currentTurnColor);
+
+            Piece selectedPiece = board.SelectPiece(currentTurnColor);
+
+            board.MoveSelectedPiece(selectedPiece);
+
+            Console.ReadLine();
+
+            playerRef.PushState("moves", playerRef.GetState("moves") + 1);
+            currentTurnColor = (currentTurnColor == Color.BLACK) ? Color.WHITE : Color.BLACK;
+
+        }
+
+        // Show board
+        // Decide which side goes first 
+        // Player selects a piece, then chooses
     }
 
+    private bool GameOver() {
+
+        return true;
+    }
 }

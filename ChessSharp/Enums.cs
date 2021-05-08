@@ -3,7 +3,7 @@
     WHITE
 }
 
-public enum GameState {
+public enum GameStatus {
     IN_GAME,
     IN_MENU,
     PLAYING,
