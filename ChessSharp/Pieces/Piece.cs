@@ -6,7 +6,10 @@ abstract class Piece {
     public Color color { get; set; }
     public string pieceType { get; }
     public int[] pos { get; set; }
-    public Piece(Color color, string type, int[] initialPos) {
+
+    public char symbol;
+
+    public Piece(Color color, string type, int[] initialPos, char symbol) {
         /*
          * Params:
          *      p
@@ -14,6 +17,7 @@ abstract class Piece {
         this.color = color;
         this.pieceType = type;
         this.pos = initialPos;
+        this.symbol = symbol;
     }
 
     public override string ToString() {
@@ -28,10 +32,6 @@ abstract class Piece {
     public string[,] PossibleMoves(int rowSize, int colSize, Piece[,] board) {
         string[,] possibleMoves = new string[rowSize, colSize];
 
-        // Loop through the return LegalMoves() array which contains int[2] positions
-        //for (int i = 0; i < this.LegalMoves().Count; i++) {
-
-        //}
         int i = 0;
 
         // For every possible legal position e.g. [0, 3]

@@ -2,9 +2,8 @@
 
 class King : Piece {
 
-    public King(Color color, string type, int[] initalPos) : base(color, type, initalPos) {
+    public King(Color color, string type, int[] initalPos, char symbol) : base(color, type, initalPos, symbol) { }
 
-    }
 
     public override List<int[]> LegalMoves() {
 

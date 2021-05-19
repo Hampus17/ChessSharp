@@ -5,6 +5,8 @@ class Player {
 
     public Dictionary<string, int> _state;
     public Color color;
+    public List<Piece> collectedPieces = new List<Piece>();
+    public bool nextTurn = false;
 
     public Player(Color color) {
         _state = new Dictionary<string, int>() {
@@ -23,7 +25,6 @@ class Player {
 
         if (shouldUpdate)
             UpdatePlayer();
-
     }
 
     public int GetState(string key) { return _state[key]; }

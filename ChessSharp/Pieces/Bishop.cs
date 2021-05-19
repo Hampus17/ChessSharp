@@ -2,9 +2,8 @@
 
 class Bishop : Piece {
 
-    public Bishop(Color color, string type, int[] initalPos) : base(color, type, initalPos) {
+    public Bishop(Color color, string type, int[] initalPos, char symbol) : base(color, type, initalPos, symbol) { }
 
-    }
 
     public override List<int[]> LegalMoves() {
 

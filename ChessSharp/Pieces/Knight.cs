@@ -2,9 +2,7 @@
 
 class Knight : Piece {
 
-    public Knight(Color color, string type, int[] initalPos) : base(color, type, initalPos) {
-
-    }
+    public Knight(Color color, string type, int[] initalPos, char symbol) : base(color, type, initalPos, symbol) { }
 
     public override List<int[]> LegalMoves() {
         List<int[]> moves = new List<int[]>();

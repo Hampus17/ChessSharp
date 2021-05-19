@@ -8,4 +8,5 @@ public enum GameStatus {
     IN_MENU,
     PLAYING,
     PIECE_SELECTED,
+    GAMEOVER
 }

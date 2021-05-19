@@ -20,11 +20,13 @@ class Board {
     private Piece[,] _board;  // int col, int row
     private bool[,] _overlayedBoard;
     private const int ROW_SIZE = 8, COL_SIZE = 8;
+    private Game currentGame;
     
-    public Board() {
+    public Board(Game currentGame) {
         // Init the 8x8 grid
         // Init all the pieces in the correct place
-        // 
+
+        this.currentGame = currentGame;
 
         _board = new Piece[ROW_SIZE, COL_SIZE]; // Create the board
         InitPieces(); // Initialize and place down all the pieces on the 
@@ -62,22 +64,22 @@ class Board {
 
                 switch (type) {
                     case "Rook":
-                        _board[i, j] = new Rook(color, type, position);
+                        _board[i, j] = new Rook(color, type, position, 'R');
                         break;
                     case "Knight":
-                        _board[i, j] = new Knight(color, type, position);
+                        _board[i, j] = new Knight(color, type, position, 'k');
                         break;
                     case "Bishop":
-                        _board[i, j] = new Bishop(color, type, position);
+                        _board[i, j] = new Bishop(color, type, position, 'B');
                         break;
                     case "King":
-                        _board[i, j] = new King(color, type, position);
+                        _board[i, j] = new King(color, type, position, 'K');
                         break;
                     case "Queen":
-                        _board[i, j] = new Queen(color, type, position);
+                        _board[i, j] = new Queen(color, type, position, 'Q');
                         break;
                     case "Pawn":
-                        _board[i, j] = new Pawn(color, type, position);
+                        _board[i, j] = new Pawn(color, type, position, 'P');
                         break;
                     default:
                         _board[i, j] = null;
@@ -89,6 +91,10 @@ class Board {
 
 
     public Piece GetPiece(int[] boardPos) { return _board[boardPos[0], boardPos[1]]; } // Consider taking simply int col, int row instead of Array
+
+    private void SetPiece(int[] boardPos, Piece piece) {
+        _board[boardPos[0], boardPos[1]] = piece;
+    }
 
     public void MoveSelectedPiece(Piece selectedPiece) {
 
@@ -123,7 +129,33 @@ class Board {
             try {
                 chosenOption = int.Parse(Console.ReadLine());
 
-                MovePiece(selectedPiece.pos, movesPositions[chosenOption - 1]);
+                int[] dstPos = movesPositions[chosenOption - 1];
+
+                // If other color
+                if (GetPiece(dstPos) != null && GetPiece(dstPos).color != selectedPiece.color) {
+                    Piece tempPiece = GetPiece(dstPos);
+
+                    SetPiece(dstPos, selectedPiece);
+                    SetPiece(selectedPiece.pos, null);
+
+                    currentGame.playerRef.collectedPieces.Add(tempPiece);
+                }
+                else {
+                    Piece tempPiece = _board[dstPos[0], dstPos[1]];
+
+                    SetPiece(dstPos, selectedPiece);
+                    SetPiece(selectedPiece.pos, tempPiece);
+                }
+
+                Console.WriteLine("[INFO] Moving {0}: {1} to {2}",
+                    selectedPiece.color.ToString().ToLowerInvariant(),
+                    Utils.ConvertIntPosToStrPos(selectedPiece.pos),
+                    Utils.ConvertIntPosToStrPos(dstPos)
+                    );
+
+                // If enemy is on temp spot make it null again (remove it)
+
+                selectedPiece.UpdatePiecePos(new int[] { dstPos[0], dstPos[1] });
             }
             catch (Exception e) {
                 Console.WriteLine("[ERROR] Invalid input - enter a number between 0 and {0}", optionsCount);
@@ -140,21 +172,28 @@ class Board {
          *      int[]:dstPos = e.g. [3, 4]
          */
 
-        var tempDstPos = _board[dstPos[0], dstPos[1]];
         Piece selectedPiece = GetPiece(srcPos);
 
-        _board[dstPos[0], dstPos[1]] = selectedPiece;
-        _board[srcPos[0], srcPos[1]] = tempDstPos;
+        // If other color
+        if (_board[dstPos[0], dstPos[1]] != null && _board[dstPos[0], dstPos[1]].color != selectedPiece.color) {
+            Piece tempPiece = _board[dstPos[0], dstPos[1]];
+
+            _board[dstPos[0], dstPos[1]] = selectedPiece;
+            _board[selectedPiece.pos[0], selectedPiece.pos[1]] = null;
+
+            currentGame.playerRef.collectedPieces.Add(tempPiece);
+        } else {
+            Piece tempPiece = _board[dstPos[0], dstPos[1]];
+
+            _board[dstPos[0], dstPos[1]] = selectedPiece;
+            _board[selectedPiece.pos[0], selectedPiece.pos[1]] = tempPiece;
+        }
 
         Console.WriteLine("[INFO] Moving {0}: {1} to {2}", 
             selectedPiece.color.ToString().ToLowerInvariant(), 
             Utils.ConvertIntPosToStrPos(selectedPiece.pos),
             Utils.ConvertIntPosToStrPos(dstPos)
             );
-
-        Utils.Wait(4);
-
-        // If enemy is on temp spot make it null again (remove it)
 
         selectedPiece.UpdatePiecePos(new int[] { dstPos[0], dstPos[1] });
     }
@@ -175,17 +214,23 @@ class Board {
         for (int i = 0; i < ROW_SIZE; i++) {
             Console.Write("{0} ", i + 1);
             for (int j = 0; j < COL_SIZE; j++) {
+                int[] pos = new int[] { i, j };
+
                 if (possibleMoves[i, j] != null)
                     if (possibleMoves[i, j] == "current")
-                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.ForegroundColor = ConsoleColor.Cyan;
                     else if (possibleMoves[i, j] == "true")
                         Console.ForegroundColor = ConsoleColor.Green;
 
-                if (_board[i, j] != null)
-                    if (_board[i, j].color == Color.WHITE)
-                        Console.Write("[#]");
-                    else
-                        Console.Write("[X]");
+                if (GetPiece(pos) != null)
+                    if (_board[i, j].color == Color.WHITE) {
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write("[{0}]", GetPiece(pos).symbol);
+                    }
+                    else {
+                        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                        Console.Write("[{0}]", GetPiece(pos).symbol);
+                    }
                 else
                     Console.Write("[ ]");
 
@@ -221,7 +266,7 @@ class Board {
                     if (_board[i, j] != null) {
                         if (_board[i, j].color == color) {
                             int[] pos = new int[2] { i, j };
-                            Console.Write("[{0}] {1}{2}".PadRight(15), optionsCount += 1, Convert.ToChar(pos[1] + 65), pos[0] + 1);
+                            Console.Write("[{0}] {1}{2} ({3}) ".PadRight(15), optionsCount += 1, Convert.ToChar(pos[1] + 65), pos[0] + 1, GetPiece(pos).pieceType);
                             if (optionsCount < 10)
                                 Console.Write(" ");
                             movesPositions.Add(pos);
@@ -261,23 +306,30 @@ class Board {
          * 
          */
 
-
-
         for (int i = 0; i < ROW_SIZE; i++) {
             Console.ResetColor();
             Console.Write("{0} ", i + 1);
 
             for (int j = 0; j < COL_SIZE; j++) {
                 Console.ResetColor();
-                if (_board[i, j] != null) {
+                int[] pos = new int[] { i, j };
+
+                if (GetPiece(pos) != null) {
                     if (_board[i, j].color == color) {
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
                     }
 
-                    if (_board[i, j].color == Color.WHITE)
-                        Console.Write("[#]");
+                    if (GetPiece(pos) != null)
+                        if (_board[i, j].color == Color.WHITE) {
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.Write("[{0}]", GetPiece(pos).symbol);
+                        }
+                        else {
+                            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                            Console.Write("[{0}]", GetPiece(pos).symbol);
+                        }
                     else
-                        Console.Write("[X]");
+                        Console.Write("[ ]");
                 }
                 else
                     Console.Write("[ ]");
@@ -292,9 +344,4 @@ class Board {
         for (int i = 0; i < COL_SIZE; i++)
             Console.Write("{0}  ", Convert.ToChar(i + 65));
     }
-
-    public override string ToString() {
-        return "test";
-    }
-
 }
