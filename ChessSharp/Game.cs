@@ -43,8 +43,6 @@ class Game {
         Board board = new Board(this);
         Color currentTurnColor = (new Random().Next(0, 100) % 2 == 0) ? Color.WHITE : Color.BLACK;
 
-        _status = GameStatus.IN_GAME;
-
         if (_status == GameStatus.IN_MENU) {
             // Reset the board
             board = new Board(this);
@@ -54,8 +52,6 @@ class Game {
         }
 
         while (_status == GameStatus.IN_GAME) {
-
-
             if (_player1.color == currentTurnColor)
                 playerRef = _player1;
             else
@@ -82,8 +78,10 @@ class Game {
 
             // Check if game is over
             if (playerRef.collectedPieces.Count > 0)
-                if (playerRef.collectedPieces[playerRef.collectedPieces.Count - 1] is King)
+                if (playerRef.collectedPieces[playerRef.collectedPieces.Count - 1] is King) {
                     _status = GameStatus.GAMEOVER;
+
+                }
         }
     }
 
@@ -93,9 +91,6 @@ class Game {
 
         Console.WriteLine("Press any key to start...");
         Console.ReadKey();
-    }
-
-    private void ChooseOption() {
-
+        _status = GameStatus.IN_GAME;
     }
 }

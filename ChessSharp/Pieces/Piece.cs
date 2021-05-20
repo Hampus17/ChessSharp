@@ -30,6 +30,17 @@ abstract class Piece {
     public abstract List<int[]> LegalMoves();
 
     public string[,] PossibleMoves(int rowSize, int colSize, Piece[,] board) {
+        /*
+         * Usage: 
+         *      This functions will return an string array with all the possible 
+         *      moves a piece can perform
+         *      
+         * Params:
+         *      int: rowSize = the size of the y axis
+         *      int: colSize = the size of the x axis
+         *      Piece[,]: board = the board that holds all the pieces
+         */
+
         string[,] possibleMoves = new string[rowSize, colSize];
 
         int i = 0;

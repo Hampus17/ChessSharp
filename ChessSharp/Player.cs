@@ -19,17 +19,8 @@ class Player {
     }
 
     public void PushState(string key, int value, bool shouldUpdate=true) {
-        // Error checking
-
         _state[key] = value;
-
-        if (shouldUpdate)
-            UpdatePlayer();
     }
 
     public int GetState(string key) { return _state[key]; }
-
-    private void UpdatePlayer() {
-
-    }
 }

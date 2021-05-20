@@ -4,7 +4,6 @@ class Rook : Piece {
 
     public Rook(Color color, string type, int[] initalPos, char symbol) : base(color, type, initalPos, symbol) { }
 
-
     public override List<int[]> LegalMoves() {
 
         List<int[]> moves = new List<int[]>();

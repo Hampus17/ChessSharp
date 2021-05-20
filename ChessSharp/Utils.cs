@@ -6,12 +6,12 @@ static class Utils {
 
     public static int[] ConvertStrPosToIntPos(string strPos) {
         /*
-        *  Params: 
-        *      string: strPos = expects a string with this format -> "H7", or "D2"
-        *  
-        *  Return:
-        *      int[]: Array = transforms letter to corresponding number, e.g. "H7" to [7, 7]
-        */
+         * Usage: 
+         *      This function converts a position such as A5 to [1, 5]
+         *      
+         * Params:
+         *      string: strPos = a position in string form (e.g. A5)
+         */
 
         int row = Convert.ToInt32(strPos[0]) - 65;
         int col = Convert.ToInt32(strPos[1]);
@@ -20,6 +20,14 @@ static class Utils {
     }
 
     public static string ConvertIntPosToStrPos(int[] intPos) {
+        /*
+         * Usage: 
+         *      This function converts a position such as [3, 4] into a string form
+         *      
+         * Params:
+         *      int[]: intPos = a position in array form (e.g. [3, 4])
+         */
+
         char col = Convert.ToChar(intPos[1] + 65);
         string row = (intPos[0] + 1).ToString();
 
@@ -29,6 +37,14 @@ static class Utils {
     }
 
     public static void Wait(int seconds) {
+        /*
+         * Usage: 
+         *      This function waits for a certain number of seconds
+         *      
+         * Params:
+         *      int: seconds = seconds to wait
+         */
+
         bool timerElapsed = false;
 
         Timer waitTimer = new Timer();
@@ -37,23 +53,5 @@ static class Utils {
         waitTimer.Enabled = true;
 
         while (!timerElapsed) { }
-    }
-
-    public static bool GetInput(string checkType, string input) {
-
-        if (checkType == "int") {
-            try { int temp = int.Parse(input); }
-            catch { return false; }
-
-            return true;
-        } else if (checkType == "string") {
-            try { int temp = int.Parse(input); }
-            catch { return false; }
-
-            return true;
-        } else {
-            Console.WriteLine("[ERROR] Invalid checktype - use string or int");
-            return false;
-        }
     }
 }

@@ -13,7 +13,7 @@ class Pawn : Piece {
 
         // Notes:
         // For simplicity the pawn can move up and down, and always move diagonally up left/right
-        // 
+
         // We also assume that black is at the top of the board all the time
 
         List<int[]> moves = new List<int[]>();
